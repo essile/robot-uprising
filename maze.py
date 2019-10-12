@@ -15,7 +15,7 @@ color = 15
 colSens.mode='COL-REFLECT'
 
 def isWhite():
-    return colSens.value() > 15
+    return colSens.value() > 10
 
 
 def debug_print(*args, **kwargs):
@@ -26,10 +26,10 @@ def debug_print(*args, **kwargs):
     print(*args, **kwargs, file=sys.stderr)
 
 def turnRight():
-    tank_drive.on_for_degrees(50, -50, 25)
+    tank_drive.on_for_degrees(100, -100, 25)
 
 def turnLeft():
-    tank_drive.on_for_degrees(-50, 50, 25)
+    tank_drive.on_for_degrees(-100, 100, 25)
 
 while not isWhite():
     debug_print(colSens.value())
@@ -40,16 +40,20 @@ sound.speak('White')
 while True:
 
     if isWhite():
-        tank_drive.run_forever(speed_sp=-20)
+        tank_drive.run_forever(speed_sp=-200)
     else:
         foundWhite = False
-        for i in range(25):
+        for i in range(20):
             turnRight()
             if isWhite():
                 foundWhite = True
+                turnRight()
                 break
         if foundWhite:
             continue
         else:
             while not isWhite():
                 turnLeft()
+            turnLeft()
+            # turnLeft()
+
