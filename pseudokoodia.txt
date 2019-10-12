@@ -1,0 +1,6 @@
+
+jos valkoinen, aja suoraan
+jos ei, käänny oikealle max 90 astetta tai vähemmän, jos valkoinen löytyy ennen sitä 
+    jos valkoinen löytyi, aja suoraan. 
+    jos ei löytynyt, käänny vasemmalle niin kauan että löytyy valkoinen
+
