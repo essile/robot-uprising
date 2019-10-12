@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from ev3dev.ev3 import *
 from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
-from ev3dev2.motor import SpeedDPS, SpeedRPM, SpeedRPS, SpeedDPM
+from ev3dev2.motor import SpeedDPS, SpeedRPM, SpeedRPS, SpeedDPM, MoveDifferential
 from ev3dev2.sound import Sound
 from time import sleep
 
@@ -17,6 +17,8 @@ colSens.mode='COL-REFLECT'
 def robotSeesWhite():
     return colSens.value() > 15
 
+def robotSeesYellow();
+    return colSens.value() > 30
 
 def debug_print(*args, **kwargs):
     '''Print debug messages to stderr.
@@ -46,7 +48,12 @@ while True:
     # Ajetaan suoraan, jos ollaan viivan päällä
     if robotSeesWhite():
         tank_drive.run_forever(speed_sp=-200)
-
+    # Ajetaan 200mm suoraan, jos ollaan keltaisen päällä
+    # Odotetaan 10s ja käännytään 170 astetta vasempaan
+    elif robotSeesYellow():
+        mdiff.on_for_distance(SpeedRPM(60), 200)
+        time.sleep(10)
+        mdiff.turn_left(SpeedRPM(40), 170)
     else:
         whiteColorFound = False
 
@@ -54,7 +61,6 @@ while True:
         for i in range(20):
             turnRight()
             if robotSeesWhite():
-                debug_print("White color found")
                 whiteColorFound = True
                 break
         if whiteColorFound:
