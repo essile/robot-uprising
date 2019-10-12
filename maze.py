@@ -57,8 +57,9 @@ while True:
                 debug_print("White color found")
                 whiteColorFound = True
                 break
+
         if whiteColorFound:
-            # Jatketaan viivaa pitkin
+            # Suoristetaan, ja jatketaan viivaa pitkin
             turnRight()
             continue
         else:

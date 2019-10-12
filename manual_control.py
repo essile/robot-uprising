@@ -39,9 +39,8 @@ gamepad = evdev.InputDevice(ps3dev)
 # Initialize globals
 speed = 0
 turn = 0
+liftSpeed = 0
 running = True
-
-
 
 # Within this thread all the motor magic happens
 class MotorThread(threading.Thread):
@@ -49,6 +48,7 @@ class MotorThread(threading.Thread):
         # Add more sensors and motors here if you need them
         self.left_motor = ev3.LargeMotor(ev3.OUTPUT_B)
         self.right_motor = ev3.LargeMotor(ev3.OUTPUT_C)
+        self.middle_motor = ev3.MediumMotor(ev3.OUTPUT_A)
         threading.Thread.__init__(self)
 
     def run(self):
@@ -58,8 +58,10 @@ class MotorThread(threading.Thread):
         while running:
             right_dc = clamp(-speed-turn)
             left_dc = clamp(-speed+turn)
+            middle_dc = clamp(liftSpeed)
             self.right_motor.run_direct(duty_cycle_sp=right_dc)
             self.left_motor.run_direct(duty_cycle_sp=left_dc)
+            self.middle_motor.run_direct(duty_cycle_sp=middle_dc)
 
         self.motor.stop()
 
@@ -68,19 +70,31 @@ motor_thread = MotorThread()
 motor_thread.setDaemon(True)
 motor_thread.start()
 
-class ControllerEvent
-    stick = 3
-    button = 1
+class ControllerEvents:
+    TYPE_ANALOG = 3
+    TYPE_BUTTON = 1
+    LEFT_X_AXIS = 0
+    LEFT_Y_AXIS = 1
+    RIGHT_X_AXIS = 2
+    RIGHT_Y_AXIS = 5
+    TRIANGLE = 300
+    CIRCLE = 301
+    CROSS = 302
+    SQUARE = 303
 
 for event in gamepad.read_loop():   #this loops infinitely
-    if event.type == ControllerEvent.stick:             #One of the sticks is moved
-        # Add if clauses here to catch more values for your robot.
-        if event.code == 4:         #Y axis on right stick
+    if event.type == ControllerEvents.TYPE_ANALOG:             #One of the sticks is moved
+        if event.code == ControllerEvents.LEFT_Y_AXIS:
             speed = scale_stick(event.value)
-        if event.code == 3:         #X axis on right stick
+        else if event.code == ControllerEvents.LEFT_X_AXIS:
             turn = scale_stick(event.value)
+        else if event.code == ControllerEvents.RIGHT_Y_AXIS:
+            # nosta/laske kauhaa
+            liftSpeed = scale_stick(event.value)
+        else if event.code == ControllerEvents.RIGHT_X_AXIS:
 
-    if event.type == ControllerEvent.button and event.code == 302 and event.value == 1:
-        print("X button is pressed. Stopping.")
+
+    if event.type == ControllerEvents.TYPE_BUTTON and event.code == 302 and event.value == 1:
+        print("X TYPE_BUTTON is pressed. Stopping.")
         running = False
         break
