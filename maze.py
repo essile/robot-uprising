@@ -14,8 +14,8 @@ color = 15
 
 colSens.mode='COL-REFLECT'
 
-def isWhite():
-    return colSens.value() > 10
+def robotSeesWhite():
+    return colSens.value() > 15
 
 
 def debug_print(*args, **kwargs):
@@ -31,29 +31,41 @@ def turnRight():
 def turnLeft():
     tank_drive.on_for_degrees(-100, 100, 25)
 
-while not isWhite():
+
+
+# Etsitään valkoinen viiva
+while not robotSeesWhite():
     debug_print(colSens.value())
     tank_drive.run_forever(speed_sp=-150)
 
 sound.speak('White')
 
+# Kuljetaan viivaa pitkin
 while True:
 
-    if isWhite():
+    # Ajetaan suoraan, jos ollaan viivan päällä
+    if robotSeesWhite():
         tank_drive.run_forever(speed_sp=-200)
+
     else:
-        foundWhite = False
+        whiteColorFound = False
+
+        # Etsitään käännöstä oikealle max 90 astetta
         for i in range(20):
             turnRight()
-            if isWhite():
-                foundWhite = True
-                turnRight()
+            if robotSeesWhite():
+                debug_print("White color found")
+                whiteColorFound = True
                 break
-        if foundWhite:
+        if whiteColorFound:
+            # Jatketaan viivaa pitkin
+            turnRight()
             continue
         else:
-            while not isWhite():
+            # Etsitään valkoinen vasemmalta
+            while not robotSeesWhite():
                 turnLeft()
+            # Valkoinen löytyi, suoristetaan viivan suuntaisesti
             turnLeft()
-            # turnLeft()
+            turnLeft()
 

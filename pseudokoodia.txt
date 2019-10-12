@@ -1,4 +1,4 @@
-
+## Viivan seuraaminen:
 jos valkoinen, aja suoraan
 jos ei, käänny oikealle max 90 astetta tai vähemmän, jos valkoinen löytyy ennen sitä 
     jos valkoinen löytyi, aja suoraan. 
