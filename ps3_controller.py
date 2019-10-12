@@ -1,4 +1,4 @@
-#!/usr/bin/env pybricks-micropython
+#!/usr/bin/env python3
 __author__ = 'Anton Vanhoucke'
 
 import evdev
@@ -41,6 +41,8 @@ speed = 0
 turn = 0
 running = True
 
+
+
 # Within this thread all the motor magic happens
 class MotorThread(threading.Thread):
     def __init__(self):
@@ -66,16 +68,19 @@ motor_thread = MotorThread()
 motor_thread.setDaemon(True)
 motor_thread.start()
 
+class ControllerEvent
+    stick = 3
+    button = 1
 
 for event in gamepad.read_loop():   #this loops infinitely
-    if event.type == 3:             #One of the sticks is moved
+    if event.type == ControllerEvent.stick:             #One of the sticks is moved
         # Add if clauses here to catch more values for your robot.
         if event.code == 4:         #Y axis on right stick
             speed = scale_stick(event.value)
         if event.code == 3:         #X axis on right stick
             turn = scale_stick(event.value)
 
-    if event.type == 1 and event.code == 302 and event.value == 1:
+    if event.type == ControllerEvent.button and event.code == 302 and event.value == 1:
         print("X button is pressed. Stopping.")
         running = False
         break
