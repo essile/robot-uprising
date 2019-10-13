@@ -65,8 +65,9 @@ while True:
             if robotSeesWhite():
                 whiteColorFound = True
                 break
+
         if whiteColorFound:
-            # Jatketaan viivaa pitkin
+            # Suoristetaan, ja jatketaan viivaa pitkin
             turnRight()
             continue
         else:
