@@ -2,13 +2,16 @@
 from ev3dev.ev3 import *
 from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedPercent, MoveTank
 from ev3dev2.motor import SpeedDPS, SpeedRPM, SpeedRPS, SpeedDPM, MoveDifferential
+from ev3dev2.wheel import EV3Tire
 from ev3dev2.sound import Sound
 from time import sleep
 
+STUD_MM = 8
 sound = Sound()
 leftMotor = LargeMotor('outB')
 rightMotor = LargeMotor('outC')
 tank_drive = MoveTank(OUTPUT_B, OUTPUT_C)
+mdiff = MoveDifferential(OUTPUT_B, OUTPUT_C, EV3Tire, 16 * STUD_MM)
 colSens = ColorSensor()
 color = 15
 
@@ -17,8 +20,8 @@ colSens.mode='COL-REFLECT'
 def robotSeesWhite():
     return colSens.value() > 15
 
-def robotSeesYellow();
-    return colSens.value() > 30
+def robotSeesYellow():
+    return colSens.value() > 25
 
 def debug_print(*args, **kwargs):
     '''Print debug messages to stderr.
@@ -37,23 +40,22 @@ def turnLeft():
 
 # Etsitään valkoinen viiva
 while not robotSeesWhite():
-    debug_print(colSens.value())
     tank_drive.run_forever(speed_sp=-150)
 
 sound.speak('White')
 
 # Kuljetaan viivaa pitkin
 while True:
-
-    # Ajetaan suoraan, jos ollaan viivan päällä
-    if robotSeesWhite():
-        tank_drive.run_forever(speed_sp=-200)
     # Ajetaan 200mm suoraan, jos ollaan keltaisen päällä
     # Odotetaan 10s ja käännytään 170 astetta vasempaan
-    elif robotSeesYellow():
-        mdiff.on_for_distance(SpeedRPM(60), 200)
-        time.sleep(10)
-        mdiff.turn_left(SpeedRPM(40), 170)
+    if robotSeesYellow():
+        mdiff.on_for_distance(SpeedRPM(-60), 200)
+        time.sleep(4)
+        mdiff.turn_left(SpeedRPM(40), 340)
+        mdiff.on_for_distance(SpeedRPM(-60), 160)
+    # Ajetaan suoraan, jos ollaan viivan päällä
+    elif robotSeesWhite():
+        tank_drive.run_forever(speed_sp=-200)
     else:
         whiteColorFound = False
 
