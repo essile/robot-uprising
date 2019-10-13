@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 from ev3dev.ev3 import *
-from ev3dev2.motor import 
-    LargeMotor, OUTPUT_B, OUTPUT_C, 
-    SpeedRPM, MoveDifferential, MoveTank
+from ev3dev2.motor import LargeMotor, OUTPUT_B, OUTPUT_C, SpeedRPM, MoveDifferential, MoveTank
 from ev3dev2.wheel import EV3Tire
 from time import sleep
 
